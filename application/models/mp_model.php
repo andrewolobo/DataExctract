@@ -38,4 +38,15 @@ class mp_model extends CI_Model
         $result = $this->db->query($query);
         return $result->result();
     }
+    function getImage($id){
+        $query =  "SELECT * FROM `pwun_posts` WHERE `post_parent`=$id AND `post_type` = 'attachment' AND `post_mime_type` LIKE '%image%'";
+        $result = $this->db->query($query);
+        $item = "";
+        if ($result->num_rows() > 0)
+        {
+            $row = $result->row();
+            $item =  $row->guid;
+        }
+        return $item;
+    }
 }

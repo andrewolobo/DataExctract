@@ -22,15 +22,15 @@ class Welcome extends CI_Controller
      */
     public function index()
     {
+        $this->load->database();
         $this->load->model("mp_model");
-        $this->getConstituency();
+        $result = $this->mp_model->scrapeOldDB();
+        $this->exctractPost($result);
     }
     public function indexOther()
     {
         $this->load->database();
         $this->load->model("mp_model");
-        //$result = $this->mp_model->scrapeOldDB();
-        //$this->exctractPost($result);
         $result = $this->mp_model->getBillsUpdated();
         $this->getBillsUpdated($result);
     }
@@ -128,6 +128,7 @@ class Welcome extends CI_Controller
             //echo $contents->post_title;
             $subject = $contents->post_content;
             $mp = new mp();
+            $mp->image = $this->mp_model->getImage($contents->ID);
             $mp->name = $contents->post_title;
             if (strlen($subject) > 1) {
                 $dom->loadHTML($subject);
@@ -160,7 +161,7 @@ class Welcome extends CI_Controller
                     if (preg_match("/Profession/", $rows->item($row) != null ? $rows->item($row)->nodeValue : " ")) {
                         $mp->profession = $rows->item($row + 1) != null ? $rows->item($row + 1)->nodeValue : "";
                     }
-                    if (preg_match("/Date Of Birth/", $rows->item($row) != null ? $rows->item($row)->nodeValue : " ")) {
+                    if (preg_match("/Date of birth/", $rows->item($row) != null ? $rows->item($row)->nodeValue : " ")) {
                         $mp->date_of_birth = $rows->item($row + 1) != null ? $rows->item($row + 1)->nodeValue : "";
                     }
                     if (preg_match("/Religion/", $rows->item($row) != null ? $rows->item($row)->nodeValue : " ")) {
@@ -339,5 +340,5 @@ class mp
     public $landline;
     public $special_interests;
     public $other_responsibilities;
-
+    public $image;
 }
